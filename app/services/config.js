@@ -159,6 +159,19 @@ export default Ember.Service.extend({
     }, `get ${id} from config database`);
   },
 
+  setConfigValue(id, newValue) {
+    let configDB = this.get('configDB');
+    debugger;
+    // return new Ember.RSVP.Promise(function(resolve) {
+    //   configDB.set(`config_${id}`, newValue).then(function(doc) {
+    //     run(null, resolve, doc.value);
+    //   })
+    //   .catch(function() {
+    //       run(null, resolve, newValue);
+    //     });
+    // }, `set ${id} to config database`);
+  },
+
   _getOauthConfigs(configKeys) {
     let configDB = this.get('configDB');
     let options = {

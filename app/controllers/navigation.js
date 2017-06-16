@@ -16,6 +16,11 @@ export default Ember.Controller.extend(HospitalRunVersion, ModalHelper, Progress
   session: Ember.inject.service(),
   syncStatus: '',
   currentOpenNav: null,
+  languages: Ember.computed(function() {
+    debugger;
+    return [{"en": "English"}, {"es": "Spanish"}, {"fr": "French"}];
+  }),
+  selectedLanguage: null,
 
   actions: {
     about() {
@@ -65,6 +70,7 @@ export default Ember.Controller.extend(HospitalRunVersion, ModalHelper, Progress
     },
 
     toggleSettings() {
+      // this.get('config').setConfigValue('foo', 'bar');
       this.toggleProperty('isShowingSettings');
     },
 
