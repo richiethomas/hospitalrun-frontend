@@ -1,4 +1,6 @@
-Foobar
-{{select-or-typeahead className="test-select-lang" property="selectedLanguage"
-          list=languages prompt=(t 'navigation.actions.selectLanguage')}}
-{{yield}}
+<div>
+  <div class="foobar" {{action 'selectLanguage' on='click'}}>Foobar</div>
+  {{select-or-typeahead className="test-select-lang" property="selectedLanguage"
+            list=languages prompt=(t 'navigation.actions.selectLanguage')}}
+  {{yield}}
+</div>

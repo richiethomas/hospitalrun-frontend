@@ -109,7 +109,7 @@ let ApplicationRoute = Route.extend(ApplicationRouteMixin, ModalHelper, SetupUse
     $('#apploading').remove();
     // debugger;
     this.get('config.configDB').get('current_user').then((user) => {
-      user.lang = 'es';
+      // user.lang = 'es';
       this.set('i18n.locale', user.lang);
     });
   },

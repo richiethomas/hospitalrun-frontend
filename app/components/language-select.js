@@ -3,6 +3,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   config: Ember.inject.service(),
+  i18n: Ember.inject.service(),
   languages: Ember.computed(function() {
     return ['foo', 'bar', 'baz'];
   }),
@@ -31,7 +32,17 @@ export default Ember.Component.extend({
 
   actions: {
     selectLanguage() {
-
+      let configDB = this.get('config.configDB');
+    configDB.get('current_user').then((user) => {
+      configDB.put({
+        lang: 'es',
+        _id: user._id,
+        _rev: user._rev,
+        value: user.value
+      });
+      this.set('i18n.locale', user.lang);
+      // debugger;
+    });
     }
   }
 });
