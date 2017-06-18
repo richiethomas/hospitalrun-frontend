@@ -161,7 +161,6 @@ export default Ember.Service.extend({
 
   setConfigValue(id, newValue) {
     let configDB = this.get('configDB');
-    debugger;
     return new Ember.RSVP.Promise(function(resolve) {
       configDB.put(`${id}`, newValue).then(function(doc) {
         run(null, resolve, doc.value);

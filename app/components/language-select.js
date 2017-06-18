@@ -11,26 +11,31 @@ export default Ember.Component.extend({
   languageMap: Ember.computed(() => {
     return {
       "English": "en",
-      "French": "fr",
-      "Spanish": "es"
+      "French": "fr"
     }
   }),
   selectedLanguage: null,
 
-  actions: {
-    selectLanguage(_, selection) {
-      let configDB = this.get('config.configDB');
-      let languageChoice = this.get('languageMap')[selection];
+  _setUserLanguageChoice(language) {
+    let configDB = this.get('config.configDB');
     configDB.get('current_user').then((user) => {
       configDB.put({
-        lang: languageChoice,
+        lang: language,
         _id: user._id,
         _rev: user._rev,
         value: user.value
       });
-      this.set('i18n.locale', user.lang);
-      this.get('onFinish')();
     });
+  },
+
+  actions: {
+    selectLanguage(_, selection) {
+      this.set('selectedLanguage', this.get('languageMap')[selection]);
+      this._setUserLanguageChoice(this.get('selectedLanguage'));
+      this.set('i18n.locale', this.get('selectedLanguage'));
+      this.get('onFinish')();
     }
   }
+
+
 });
