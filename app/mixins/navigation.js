@@ -372,7 +372,8 @@ export default Ember.Mixin.create({
   ],
 
   // Navigation items get mapped localizations
-  localizedNavItems: Ember.computed('navItems.[]', function() {
+  localizedNavItems: Ember.computed('navItems.[]', 'i18n.locale', function() {
+    console.log("Inside localizedNavItems");
     let localizationPrefix = 'navigation.';
     // Supports unlocalized keys for now, otherwise we would get:
     // "Missing translation: key.etc.path"
@@ -395,7 +396,6 @@ export default Ember.Mixin.create({
         set(sub, 'localizedTitle', translationOrOriginal(subTranslated, sub.title));
         return sub;
       }));
-
       return nav;
     });
   }),

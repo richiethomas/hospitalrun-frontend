@@ -17,8 +17,7 @@ export default Ember.Controller.extend(HospitalRunVersion, ModalHelper, Progress
   syncStatus: '',
   currentOpenNav: null,
   languages: Ember.computed(function() {
-    debugger;
-    return [{"en": "English"}, {"es": "Spanish"}, {"fr": "French"}];
+    return [{"en": "English"}, {"fr": "French"}];
   }),
   selectedLanguage: null,
 

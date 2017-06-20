@@ -1,6 +1,5 @@
 import Ember from 'ember';
 
-
 export default Ember.Component.extend({
   config: Ember.inject.service(),
   i18n: Ember.inject.service(),
@@ -36,6 +35,5 @@ export default Ember.Component.extend({
       this.get('onFinish')();
     }
   }
-
 
 });
