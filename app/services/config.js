@@ -159,17 +159,17 @@ export default Ember.Service.extend({
     }, `get ${id} from config database`);
   },
 
-  setConfigValue(id, newValue) {
-    let configDB = this.get('configDB');
-    return new Ember.RSVP.Promise(function(resolve) {
-      configDB.put(`${id}`, newValue).then(function(doc) {
-        run(null, resolve, doc.value);
-      })
-      .catch(function() {
-        console.log(`Setting the ${id} value failed.`);
-        });
-    }, `set ${id} to config database`);
-  },
+  // setConfigValue(id, newValue) {
+  //   let configDB = this.get('configDB');
+  //   return new Ember.RSVP.Promise(function(resolve) {
+  //     configDB.put(`${id}`, newValue).then(function(doc) {
+  //       run(null, resolve, doc.value);
+  //     })
+  //     .catch(function() {
+  //       console.log(`Setting the ${id} value failed.`);
+  //     });
+  //   }, `set ${id} to config database`);
+  // },
 
   _getOauthConfigs(configKeys) {
     let configDB = this.get('configDB');

@@ -9,9 +9,9 @@ export default Ember.Component.extend({
   onFinish: null,
   languageMap: Ember.computed(() => {
     return {
-      "English": "en",
-      "French": "fr"
-    }
+      'English': 'en',
+      'French': 'fr'
+    };
   }),
   selectedLanguage: null,
 
