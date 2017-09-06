@@ -6,57 +6,59 @@ export default Ember.Service.extend({
   config: Ember.inject.service(),
 
   setUserI18nPreference() {
+    // TODO: remove duplication between this function and `storeUserI18n` function below
     let configDB = this.get('config.configDB');
     let userName;
     configDB.get('current_user').then((user) => {
-      switch (typeof user.value) {
-        case 'string':
-          userName = user.value;
-          break;
-        case 'object':
-          userName = user.value.name;
-          break;
-        default:
-          userName = 'default';
-      }
+      // see if you can get away with skipping this step if the user is not logged in
+      userName = this._fetchUsername(user);
     }).then(() => {
       return configDB.get('preferences');
     }).then((preferences) => {
+      // This block is the only difference between the two functions
       this._setSessionI18nIfPreferenceExists(preferences, userName);
     }).catch((err) => {
       console.log(err);
-      this._initPreferencesDB(userName, 'en');
+      if (err.status === 404) {
+        this._initPreferencesDB(userName, 'en');
+      }
     });
+  },
+
+  storeUserI18n(i18n) {
+    // TODO: remove duplication between this function and `setUserI18nPreference` function above
+    let configDB = this.get('config.configDB');
+    let userName;
+    configDB.get('current_user').then((user) => {
+      userName = this._fetchUsername(user);
+    }).then(() => {
+      return configDB.get('preferences');
+    }).then((preferences) => {
+      // This block is the only difference between the two functions
+      this._storeUserI18nIfPreferenceExists(preferences, userName, i18n);
+    }).catch((err) => {
+      console.log(err);
+      if (err.status === 404) {
+        this._initPreferencesDB(userName, i18n);
+      }
+    });
+  },
+
+  _fetchUsername(user) {
+    switch (typeof user.value) {
+      case 'string':
+        return user.value;
+      case 'object':
+        return user.value.name;
+      default:
+        return 'default';
+    }
   },
 
   _setSessionI18nIfPreferenceExists(preferences, userName) {
     if (preferences[userName]) {
       this.set('i18n.locale', preferences[userName].i18n);
     }
-  },
-
-  storeUserI18n(i18n) {
-    let configDB = this.get('config.configDB');
-    let userName;
-    configDB.get('current_user').then((user) => {
-      switch (typeof user.value) {
-        case 'string':
-          userName = user.value;
-          break;
-        case 'object':
-          userName = user.value.name;
-          break;
-        default:
-          userName = 'default';
-      }
-    }).then(() => {
-      return configDB.get('preferences');
-    }).then((preferences) => {
-      this._storeUserI18nIfPreferenceExists(preferences, userName, i18n);
-    }).catch((err) => {
-      console.log(err);
-      this._initPreferencesDB(userName, i18n);
-    });
   },
 
   _storeUserI18nIfPreferenceExists(preferences, userName, i18n) {

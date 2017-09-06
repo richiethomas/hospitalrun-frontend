@@ -11,18 +11,21 @@ moduleForComponent('language-dropdown', 'Integration | Component | language drop
 });
 
 test('it renders', function(assert) {
-  assert.expect(1);
+  assert.expect(3);
   this.render(hbs`{{language-dropdown}}`);
   assert.equal(this.$('.language-dropdown').length, 1);
+  assert.equal(this.$().text().trim().includes('Select Language'), true);
+  assert.equal(this.$().text().trim().includes('German'), true);
 });
 
 test('it reacts to language updates', function(assert) {
-  assert.expect(6);
+  assert.expect(4);
   let model = Ember.Object.extend({
     mockOnFinishCalled: 0
   });
   this.set('model', model);
   this.set('mockOnFinish', () => {
+    // TODO: explain why you're asserting in this manner
     assert.equal(1, 1);
   });
 
@@ -36,9 +39,6 @@ test('it reacts to language updates', function(assert) {
   this.inject.service('languagePreference', { as: 'languagePreference' });
 
   this.render(hbs`{{language-dropdown onFinish=(action mockOnFinish)}}`);
-
-  assert.equal(this.$().text().trim().includes('Select Language'), true);
-  assert.equal(this.$().text().trim().includes('German'), true);
 
   $('option:contains("German")').prop('selected', true).trigger('change');
 });
