@@ -7,7 +7,7 @@ export default Ember.Service.extend({
 
   getUserI18nPreference() {
     let setSessionI18n = (preferences, userName) => {
-      if (preferences[userName]) {
+      if (userName && preferences[userName]) {
         this.set('i18n.locale', preferences[userName].i18n);
       }
     }
@@ -53,16 +53,13 @@ export default Ember.Service.extend({
       case 'object':
         return user.value.name;
       default:
-        return 'default';
+        return undefined;
     }
   },
 
   _initPreferencesDB(username, i18n) {
     let doc = {
-      _id: 'preferences',
-      'default': {
-        'i18n': 'en'
-      }
+      _id: 'preferences'
     };
     if (username != undefined) {
       doc[username] = {
