@@ -5,33 +5,28 @@ export default Ember.Service.extend({
   i18n: Ember.inject.service(),
   config: Ember.inject.service(),
 
-  setUserI18nPreference() {
-    let success = (preferences, userName, options) => {
-      this._setSessionI18nIfPreferenceExists(preferences, userName);
-    }
-    let failure = (err) => {
-      console.log(err);
-      if (err.status === 404) {
-        this._initPreferencesDB(userName, 'en');
+  getUserI18nPreference() {
+    let setSessionI18n = (preferences, userName, options) => {
+      if (preferences[userName]) {
+        this.set('i18n.locale', preferences[userName].i18n);
       }
     }
-    this._fetchUserPreferencesDBThen(success, failure, {"i18n": 'en'});
+    this._fetchUserPreferencesDBThen(setSessionI18n, {'i18n': 'en'});
   },
 
-  storeUserI18n(i18n) {
-    let success = (preferences, userName, options) => {
-      this._storeUserI18nIfPreferenceExists(preferences, userName, options.i18n);
-    }
-    let failure = (err) => {
-      console.log(err);
-      if (err.status === 404) {
-        this._initPreferencesDB(userName, i18n);
+  setUserI18nPreference(i18n) {
+    let setUserI18n = (preferences, userName, options) => {
+      if (preferences[userName] === undefined) {
+        preferences[userName] = {};
       }
+      preferences[userName].i18n = options.i18n;
+      this.get('config.configDB').put(preferences);
+      this.set('i18n.locale', options.i18n);
     }
-    this._fetchUserPreferencesDBThen(success, failure, {"i18n": i18n});
+    this._fetchUserPreferencesDBThen(setUserI18n, {'i18n': i18n});
   },
 
-  _fetchUserPreferencesDBThen(success, failure, options) {
+  _fetchUserPreferencesDBThen(callback, options) {
     let configDB = this.get('config.configDB');
     let userName;
     configDB.get('current_user').then((user) => {
@@ -42,9 +37,12 @@ export default Ember.Service.extend({
       return Ember.RSVP.hash(promises);
     }).then((promises) => {
       let { preferences, userName } = promises;
-      success(preferences, userName, options);
+      callback(preferences, userName, options);
     }).catch((err) => {
-      failure(err);
+      console.log(err);
+      if (err.status === 404) {
+        this._initPreferencesDB(userName, 'en');
+      }
     });
   },
 
@@ -57,21 +55,6 @@ export default Ember.Service.extend({
       default:
         return 'default';
     }
-  },
-
-  _setSessionI18nIfPreferenceExists(preferences, userName) {
-    if (preferences[userName]) {
-      this.set('i18n.locale', preferences[userName].i18n);
-    }
-  },
-
-  _storeUserI18nIfPreferenceExists(preferences, userName, i18n) {
-    if (preferences[userName] === undefined) {
-      preferences[userName] = {};
-    }
-    preferences[userName].i18n = i18n;
-    this.get('config.configDB').put(preferences);
-    this.set('i18n.locale', i18n);
   },
 
   _initPreferencesDB(username, i18n) {

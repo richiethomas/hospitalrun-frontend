@@ -178,7 +178,7 @@ export default Ember.Service.extend({
     config.get('current_user').then((doc) => {        // Set username in current_user DB
       doc.value = userName;
       config.put(doc);
-      this.get('languagePreference').setUserI18nPreference();
+      this.get('languagePreference').getUserI18nPreference();
     }).catch(() => {
       let doc = {
         '_id': 'current_user',

@@ -19,8 +19,8 @@ export default Ember.Component.extend({
   onFinish: null,
 
   actions: {
-    selectLanguage(selection) {
-      this.get('languagePreference').storeUserI18n(selection);
+    selectLanguage(i18n) {
+      this.get('languagePreference').setUserI18nPreference(i18n);
       this.get('onFinish')();
     }
   }
