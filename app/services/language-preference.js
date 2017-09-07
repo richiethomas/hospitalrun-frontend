@@ -6,41 +6,45 @@ export default Ember.Service.extend({
   config: Ember.inject.service(),
 
   setUserI18nPreference() {
-    // TODO: remove duplication between this function and `storeUserI18n` function below
-    let configDB = this.get('config.configDB');
-    let userName;
-    configDB.get('current_user').then((user) => {
-      // see if you can get away with skipping this step if the user is not logged in
-      userName = this._fetchUsername(user);
-    }).then(() => {
-      return configDB.get('preferences');
-    }).then((preferences) => {
-      // This block is the only difference between the two functions
+    let success = (preferences, userName, options) => {
       this._setSessionI18nIfPreferenceExists(preferences, userName);
-    }).catch((err) => {
+    }
+    let failure = (err) => {
       console.log(err);
       if (err.status === 404) {
         this._initPreferencesDB(userName, 'en');
       }
-    });
+    }
+    this._fetchUserPreferencesDBThen(success, failure, {"i18n": 'en'});
   },
 
   storeUserI18n(i18n) {
-    // TODO: remove duplication between this function and `setUserI18nPreference` function above
+    let success = (preferences, userName, options) => {
+      this._storeUserI18nIfPreferenceExists(preferences, userName, options.i18n);
+    }
+    let failure = (err) => {
+      console.log(err);
+      if (err.status === 404) {
+        this._initPreferencesDB(userName, i18n);
+      }
+    }
+    this._fetchUserPreferencesDBThen(success, failure, {"i18n": i18n});
+  },
+
+  _fetchUserPreferencesDBThen(success, failure, options) {
     let configDB = this.get('config.configDB');
     let userName;
     configDB.get('current_user').then((user) => {
       userName = this._fetchUsername(user);
     }).then(() => {
-      return configDB.get('preferences');
-    }).then((preferences) => {
-      // This block is the only difference between the two functions
-      this._storeUserI18nIfPreferenceExists(preferences, userName, i18n);
+      let preferences = configDB.get('preferences');
+      let promises = { userName, preferences };
+      return Ember.RSVP.hash(promises);
+    }).then((promises) => {
+      let { preferences, userName } = promises;
+      success(preferences, userName, options);
     }).catch((err) => {
-      console.log(err);
-      if (err.status === 404) {
-        this._initPreferencesDB(userName, i18n);
-      }
+      failure(err);
     });
   },
 
