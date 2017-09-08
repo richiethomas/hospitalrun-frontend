@@ -30,7 +30,7 @@ test('it reacts to language updates', function(assert) {
   });
 
   let languagePreference = Ember.Service.extend({
-    storeUserI18n(language) {
+    setUserI18nPreference(language) {
       assert.equal(language, 'de');
     }
   });

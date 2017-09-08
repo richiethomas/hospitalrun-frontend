@@ -10,7 +10,7 @@ export default Ember.Service.extend({
       if (userName && preferences[userName]) {
         this.set('i18n.locale', preferences[userName].i18n);
       }
-    }
+    };
     this._fetchUserPreferencesDBThen(setSessionI18n);
   },
 
@@ -22,7 +22,7 @@ export default Ember.Service.extend({
       preferences[userName].i18n = i18n;
       this.get('config.configDB').put(preferences);
       this.set('i18n.locale', i18n);
-    }
+    };
     this._fetchUserPreferencesDBThen(setUserI18n);
   },
 
