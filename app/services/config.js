@@ -180,11 +180,10 @@ export default Ember.Service.extend({
       config.put(doc);
       this.get('languagePreference').getUserI18nPreference();
     }).catch(() => {
-      let doc = {
-        '_id': 'current_user',
-        'value': userName
-      };
-      config.put(doc);
+      config.put({
+        _id: 'current_user',
+        value: userName
+      });
     });
   }
 
