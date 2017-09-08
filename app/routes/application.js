@@ -107,7 +107,7 @@ let ApplicationRoute = Route.extend(ApplicationRouteMixin, ModalHelper, SetupUse
   afterModel() {
     set(this.controllerFor('navigation'), 'allowSearch', false);
     $('#apploading').remove();
-    this.get('languagePreference').getUserI18nPreference();
+    this.get('languagePreference').setSessionI18nPreference();
   },
 
   renderModal(template) {

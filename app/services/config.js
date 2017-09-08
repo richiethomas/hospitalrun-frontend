@@ -175,10 +175,10 @@ export default Ember.Service.extend({
     if (!userName && sessionData.authenticated) {
       userName = sessionData.authenticated.name;
     }
-    config.get('current_user').then((doc) => {        // Set username in current_user DB
+    config.get('current_user').then((doc) => {
       doc.value = userName;
       config.put(doc);
-      this.get('languagePreference').getUserI18nPreference();
+      this.get('languagePreference').setSessionI18nPreference();
     }).catch(() => {
       config.put({
         _id: 'current_user',

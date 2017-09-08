@@ -5,7 +5,7 @@ export default Ember.Service.extend({
   i18n: Ember.inject.service(),
   config: Ember.inject.service(),
 
-  getUserI18nPreference() {
+  setSessionI18nPreference() {
     let setSessionI18n = (preferences, userName) => {
       if (userName && preferences[userName]) {
         this.set('i18n.locale', preferences[userName].i18n);
