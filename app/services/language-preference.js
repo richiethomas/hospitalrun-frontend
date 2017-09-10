@@ -30,15 +30,17 @@ export default Ember.Service.extend({
 
   _fetchUserPreferencesDB() {
     let configDB = this.get('config.configDB');
-    let userName;
+    let userName, preferences;
     return configDB.get('current_user').then((user) => {
       userName = this._fetchUsername(user);
-      let preferences = configDB.get('preferences');
+    }).then(() => {
+      preferences = configDB.get('preferences');
       return Ember.RSVP.hash({ userName, preferences });
     }).catch((err) => {
       console.log(err);
       if (err.status === 404) {
-        this._initPreferencesDB(userName, 'en');
+        preferences = this._initPreferencesDB(userName, 'en');
+        return Ember.RSVP.hash({ userName, preferences });
       }
     });
   },
@@ -63,6 +65,8 @@ export default Ember.Service.extend({
         i18n: i18n || 'en'
       };
     }
-    this.get('config.configDB').put(doc);
+    return this.get('config.configDB').put(doc).catch((err) => {
+      console.log(err);
+    });
   }
 });
